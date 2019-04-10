@@ -34,8 +34,8 @@ class SensorReader:
             #print json.dumps(res)
             #sys.exit(0)
             t0 = time.time()
-            #kd.put_metrics(payload)
-            print json.dumps(payload[0:3], indent=4)
+            kd.put_metrics(payload)
+            #print json.dumps(payload[0:3], indent=4)
             t1 = time.time()
             print "Server %s:...............insert: %d sensors, time: %f sec, insert_rate %f sens/sec" % (self.sensor.server, \
                                                                                                            len(payload),\
