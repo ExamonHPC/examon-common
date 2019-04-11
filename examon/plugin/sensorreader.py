@@ -28,7 +28,7 @@ class SensorReader:
         while True:
             #t0 = time.time()
             if self.read_data:
-                res, headers, payload  = self.read_data(self)
+                worker_id, payload  = self.read_data(self)
             #t1 = time.time()
             #print "Retrieved and processed %d nodes in %f seconds" % (len(res),(t1-t0),)
             #print json.dumps(res)
@@ -37,7 +37,7 @@ class SensorReader:
             kd.put_metrics(payload)
             #print json.dumps(payload[0:3], indent=4)
             t1 = time.time()
-            print "Server %s:...............insert: %d sensors, time: %f sec, insert_rate %f sens/sec" % (self.sensor.server, \
+            print "Worker %s:...............insert: %d sensors, time: %f sec, insert_rate %f sens/sec" % (worker_id, \
                                                                                                            len(payload),\
                                                                                                            (t1-t0),\
                                                                                                            len(payload)/(t1-t0), )
