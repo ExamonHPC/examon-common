@@ -6,6 +6,7 @@ import collections
 from examon.utils.executor import Executor
 from examon.utils.config import Config
 from examon.utils.daemon import Daemon
+from examon.version import version
 
 
 class ExamonApp(Executor):
@@ -14,7 +15,7 @@ class ExamonApp(Executor):
             self.configfilename = os.path.splitext(os.path.basename(sys.argv[0]))[0]
         else:
             self.configfilename = configfilename
-        self.cfg = Config(self.configfilename + '.conf')
+        self.cfg = Config(self.configfilename + '.conf', version=version)
         self.conf = self.cfg.get_defaults()
         self.pidfile = None
         self.daemon = None
