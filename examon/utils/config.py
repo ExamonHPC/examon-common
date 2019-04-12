@@ -4,22 +4,23 @@ import ConfigParser
 
 
 class Config:
-    def __init__(self, configfile):
+    def __init__(self, configfile, version=None):
         self.configfile = configfile
         self.defaults = {}
         self.parser = argparse.ArgumentParser()
         # default args
-        self.parser.add_argument("runmode", choices=['run','start','restart','stop'], help="Run mode")
-        self.parser.add_argument("-b", dest='MQTT_BROKER', help="IP address of the MQTT broker")
-        self.parser.add_argument("-p", dest='MQTT_PORT', help="Port of the MQTT broker")
-        self.parser.add_argument("-t", dest='MQTT_TOPIC', help="MQTT topic")
-        self.parser.add_argument("-s", dest='TS', help="Sampling time (seconds)")
-        self.parser.add_argument("-x", dest='PID_FILENAME', help="pid filename")
-        self.parser.add_argument("-l", dest='LOG_FILENAME', help="log filename")
-        self.parser.add_argument("--kairosdb-server", dest='K_SERVERS', help="kairosdb servers")
-        self.parser.add_argument("--kairosdb-port", dest='K_PORT', help="kairosdb port")
-        self.parser.add_argument("--kairosdb-user", dest='K_USER', help="kairosdb username")
-        self.parser.add_argument("--kairosdb-password", dest='K_PASSWORD', help="kairosdb password")
+        self.parser.add_argument('runmode', choices=['run','start','restart','stop'], help='Run mode')
+        self.parser.add_argument('-b', dest='MQTT_BROKER', help='IP address of the MQTT broker')
+        self.parser.add_argument('-p', dest='MQTT_PORT', help='Port of the MQTT broker')
+        self.parser.add_argument('-t', dest='MQTT_TOPIC', help='MQTT topic')
+        self.parser.add_argument('-s', dest='TS', help='Sampling time (seconds)')
+        self.parser.add_argument('-x', dest='PID_FILENAME', help='pid filename')
+        self.parser.add_argument('-l', dest='LOG_FILENAME', help='log filename')
+        self.parser.add_argument('--version', action='version', version=version)
+        self.parser.add_argument('--kairosdb-server', dest='K_SERVERS', help='kairosdb servers')
+        self.parser.add_argument('--kairosdb-port', dest='K_PORT', help='kairosdb port')
+        self.parser.add_argument('--kairosdb-user', dest='K_USER', help='kairosdb username')
+        self.parser.add_argument('--kairosdb-password', dest='K_PASSWORD', help='kairosdb password')
     
     def get_defaults(self):
         config = ConfigParser.RawConfigParser()
