@@ -15,7 +15,7 @@ setup(name='examon-common',
       author='Francesco Beneventi',
       author_email='francesco.beneventi@unibo.it',
       license='MIT',
-      packages=['examon', 'examon.plugin', 'examon.utils'],      
+      packages=['examon', 'examon.plugin', 'examon.utils', 'examon.db', 'examon.transport'],      
       install_requires=[
           'requests',
           'paho-mqtt'
