@@ -14,7 +14,7 @@ import StringIO
 #sys.path.append('../../lib/mosquitto-1.3.5/lib/python')
 #import mosquitto
 import paho.mqtt.client as mosquitto
-from daemon import Daemon
+
 
 
 class Mqtt(object):
@@ -68,6 +68,9 @@ class Mqtt(object):
         self.process(client,msg)
     
     def _compress(self, payload):
+        """
+            Compress payload. TODO: replace with blosc
+        """
         s = StringIO.StringIO()
         with gzip.GzipFile(fileobj=s, mode='w') as g:
             g.write(json.dumps(payload))

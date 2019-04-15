@@ -23,12 +23,14 @@ class SensorReader:
         return copy.deepcopy(self.tags)
     
     def run(self):
+        if not self.read_data:
+            raise Exception("'read_data' must be implemented!")
         kd = KairosDB(self.conf['K_SERVERS'], self.conf['K_PORT'], self.conf['K_USER'], self.conf['K_PASSWORD'])
         TS = float(self.conf['TS'])
         while True:
             #t0 = time.time()
-            if self.read_data:
-                worker_id, payload  = self.read_data(self)
+            #if self.read_data:
+            worker_id, payload  = self.read_data(self)
             #t1 = time.time()
             #print "Retrieved and processed %d nodes in %f seconds" % (len(res),(t1-t0),)
             #print json.dumps(res)

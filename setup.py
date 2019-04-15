@@ -17,6 +17,7 @@ setup(name='examon-common',
       license='MIT',
       packages=['examon', 'examon.plugin', 'examon.utils'],      
       install_requires=[
-          'requests'
+          'requests',
+          'paho-mqtt'
       ],
       zip_safe=False)
