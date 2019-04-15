@@ -23,7 +23,7 @@ class SensorReader:
             self.dest_client = KairosDB(self.conf['K_SERVERS'], self.conf['K_PORT'], self.conf['K_USER'], self.conf['K_PASSWORD'])
         elif self.conf['OUT_PROTOCOL'] == 'mqtt':
             # TODO: add MQTT format in conf
-            self.dest_client = Mqtt(self.conf['MQTT_BROKER'], self.conf['MQTT_PORT'], format='csv', outtopic=self.conf['MQTT_TOPIC'])
+            self.dest_client = Mqtt(self.conf['MQTT_BROKER'], self.conf['MQTT_PORT'], format=self.conf['MQTT_FORMAT'], outtopic=self.conf['MQTT_TOPIC'])
             self.dest_client.run()
        
     def add_tags(self, tags):
