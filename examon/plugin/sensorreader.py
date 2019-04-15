@@ -4,7 +4,8 @@ import time
 import json
 import collections
 
-from examon.utils.kairosdb import KairosDB
+from examon.db.kairosdb import KairosDB
+from examon.transport.mqtt import Mqtt
 
 class SensorReader:
     """
@@ -15,7 +16,16 @@ class SensorReader:
         self.sensor = sensor
         self.tags = collections.OrderedDict()
         self.read_data = None
-
+        self.dest_client = None
+        self.comp = self.conf['COMPRESS']
+        
+        if self.conf['OUT_PROTOCOL'] == 'kairosdb':
+            self.dest_client = KairosDB(self.conf['K_SERVERS'], self.conf['K_PORT'], self.conf['K_USER'], self.conf['K_PASSWORD'])
+        elif self.conf['OUT_PROTOCOL'] == 'mqtt':
+            # TODO: add MQTT format in conf
+            self.dest_client = Mqtt(self.conf['MQTT_BROKER'], self.conf['MQTT_PORT'], format='csv', outtopic=self.conf['MQTT_TOPIC'])
+            self.dest_client.run()
+       
     def add_tags(self, tags):
         self.tags = copy.deepcopy(tags)
         
@@ -25,7 +35,7 @@ class SensorReader:
     def run(self):
         if not self.read_data:
             raise Exception("'read_data' must be implemented!")
-        kd = KairosDB(self.conf['K_SERVERS'], self.conf['K_PORT'], self.conf['K_USER'], self.conf['K_PASSWORD'])
+
         TS = float(self.conf['TS'])
         while True:
             #t0 = time.time()
@@ -36,7 +46,7 @@ class SensorReader:
             #print json.dumps(res)
             #sys.exit(0)
             t0 = time.time()
-            kd.put_metrics(payload)
+            self.dest_client.put_metrics(payload, comp=self.comp)
             #print json.dumps(payload[0:3], indent=4)
             t1 = time.time()
             print "Worker %s:...............insert: %d sensors, time: %f sec, insert_rate %f sens/sec" % (worker_id, \

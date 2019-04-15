@@ -10,6 +10,7 @@ import sys
 import zlib
 import gzip 
 import json
+import struct
 import StringIO
 #sys.path.append('../../lib/mosquitto-1.3.5/lib/python')
 #import mosquitto
@@ -21,7 +22,7 @@ class Mqtt(object):
     """
         MQTT client
     """
-    def __init__(self, brokerip, brokerport, format='csv', intopic=None, outtopic=None qos=0, retain=False):
+    def __init__(self, brokerip, brokerport, format='csv', intopic=None, outtopic=None, qos=0, retain=False):
         self.brokerip = brokerip
         self.brokerport = brokerport
         self.intopic = intopic
@@ -56,7 +57,7 @@ class Mqtt(object):
         print("Connected with result code "+str(rc))
         # Subscribing in on_connect() means that if we lose the connection and
         # reconnect then subscriptions will be renewed.
-        if self.intopic
+        if self.intopic:
             print self.intopic
             self.client.subscribe(self.intopic)
 
@@ -73,28 +74,38 @@ class Mqtt(object):
         """
         s = StringIO.StringIO()
         with gzip.GzipFile(fileobj=s, mode='w') as g:
-            g.write(json.dumps(payload))
+            g.write(payload)
         return s.getvalue()
         
     def _put_metrics_csv(self, metrics, comp=False):
         """
-            One value per message.
+            One value per message: csv.
             Topic is a <key>/<value> sequence obtained from metric['tags'] dict
             Payload is a string cat <value>;<timestamp_epoch_seconds>
         """
         for metric in metrics:
+            # build value
+            payload = str(metric['value']).encode('utf-8')
+            # skip if no value
+            if payload == '':
+                continue
+            payload += (";%.3f" % ((metric['timestamp'])/1000))
+            payload = str(payload)
+            if comp:
+                payload = self._compress(payload)  # TODO: find a better way. This manage both strings and floats
             # build topic 
-            topic = '/'.join([str(val) for pair in metric['tags'].items() for val in pair])
-            topic += '/' + metric['name']
+            topic = '/'.join([(val).encode('utf-8') for pair in metric['tags'].items() for val in pair])
+            topic += '/' + (metric['name']).encode('utf-8')
             # sanitize
             topic = topic.replace(' ','_').replace('+','_').replace('#','_').replace('.','_')
-            # build value
-            payload = str(metric['value'])
-            payload += (";%.3f" % ((metric['timestamp'])/1000))
+            topic = (topic).decode('utf-8')
             # publish
             #logger.debug(topic)
             #logger.debug(value)
+            #print topic
+            #print payload
             try:
+                #pass
                 self.client.publish(topic, payload=payload, qos=self.qos, retain=self.retain)
             except:
                 e = sys.exc_info()[0]
@@ -104,7 +115,7 @@ class Mqtt(object):
     
     def _put_metrics_json(self, metrics, comp=False):
         """
-            One value per message.
+            One value per message: json.
             Topic is a pre-defined value (outtopic)
             Payload is the json obtained from metric
         """
@@ -113,7 +124,7 @@ class Mqtt(object):
             topic = self.outtopic
             # build value
             if comp:
-                payload = self._compress(metric)
+                payload = self._compress(json.dumps(metric))
             else: 
                 payload = json.dumps(metric)
             # publish
@@ -137,7 +148,7 @@ class Mqtt(object):
         topic = self.outtopic
         # build value
         if comp:
-            payload = self._compress(metrics)
+            payload = self._compress(json.dumps(metrics))
         else: 
             payload = json.dumps(metrics)
         # publish
@@ -150,6 +161,7 @@ class Mqtt(object):
             #logger.error("[%s] Exception in MQTT publish: %s", mp.current_process().name, e)
             print "[%s] Exception in MQTT publish: %s" % ('MQTT', e)
             pass
+            
         
     def run(self):
         """
