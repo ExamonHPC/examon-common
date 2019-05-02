@@ -40,11 +40,13 @@ class KairosDB:
             payload = json.dumps(metrics)
         try:
             response = self.s.post(self.apis['post_metrics'], payload, headers=headers)
-            #print response
+            response.raise_for_status()
         except:
             e = sys.exc_info()[0]
             #logger.error("[%s] Exception in post(): %s", "KairosDB", e)
             print "[%s] Exception in post(): %s" % ("KairosDB", e,)
+            print "[%s] Reason: " % ("KairosDB",)
+            print response.text
             pass 
     
     def query_metrics(self, query):
