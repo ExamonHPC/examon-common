@@ -12,6 +12,7 @@ import gzip
 import json
 import struct
 import StringIO
+import logging
 #sys.path.append('../../lib/mosquitto-1.3.5/lib/python')
 #import mosquitto
 import paho.mqtt.client as mosquitto
@@ -32,6 +33,7 @@ class Mqtt(object):
         self.client = mosquitto.Mosquitto()
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
+        self.logger = logging.getLogger(__name__)
         
         # set msg format: default = 'csv'
         if format == 'csv':
@@ -54,11 +56,13 @@ class Mqtt(object):
         """
             On connect callback
         """
-        print("Connected with result code "+str(rc))
+        #print("Connected with result code "+str(rc))
+        self.logger.info("Connected with result code %s" % (str(rc)))
         # Subscribing in on_connect() means that if we lose the connection and
         # reconnect then subscriptions will be renewed.
         if self.intopic:
-            print self.intopic
+            #print self.intopic
+            self.logger.info("Subscribing to: %s" % (self.intopic))
             self.client.subscribe(self.intopic)
 
     # The callback for when a PUBLISH message is received from the server.
@@ -104,13 +108,14 @@ class Mqtt(object):
             #logger.debug(value)
             #print topic
             #print payload
+            self.logger.debug('[MqttPub] Topic: %s - Payload: %s' % (topic,str(payload)))
             try:
                 #pass
                 self.client.publish(topic, payload=payload, qos=self.qos, retain=self.retain)
             except:
                 e = sys.exc_info()[0]
-                #logger.error("[%s] Exception in MQTT publish: %s", mp.current_process().name, e)
-                print "[%s] Exception in MQTT publish: %s" % ('MQTT', e)
+                self.logger.error("Exception in MQTT publish", exc_info=True)
+                #print "[%s] Exception in MQTT publish: %s" % ('MQTT', e)
                 pass
     
     def _put_metrics_json(self, metrics, comp=False):
@@ -130,12 +135,13 @@ class Mqtt(object):
             # publish
             #logger.debug(topic)
             #logger.debug(value)
+            self.logger.debug('[MqttPub] Topic: %s - Payload: %s' % (topic,json.dumps(metric)))
             try:
                 self.client.publish(topic, payload=payload, qos=self.qos, retain=self.retain)
             except:
                 e = sys.exc_info()[0]
-                #logger.error("[%s] Exception in MQTT publish: %s", mp.current_process().name, e)
-                print "[%s] Exception in MQTT publish: %s" % ('MQTT', e)
+                self.logger.error("Exception in MQTT publish", exc_info=True)
+                #print "[%s] Exception in MQTT publish: %s" % ('MQTT', e)
                 pass
     
     def _put_metrics_json_bulk(self, metrics, comp=True):
@@ -154,12 +160,13 @@ class Mqtt(object):
         # publish
         #logger.debug(topic)
         #logger.debug(value)
+        self.logger.debug('[MqttPub] Topic: %s - Payload: %s' % (topic,json.dumps(metrics)))
         try:
             self.client.publish(topic, payload=payload, qos=self.qos, retain=self.retain)
         except:
             e = sys.exc_info()[0]
-            #logger.error("[%s] Exception in MQTT publish: %s", mp.current_process().name, e)
-            print "[%s] Exception in MQTT publish: %s" % ('MQTT', e)
+            self.logger.error("Exception in MQTT publish", exc_info=True)
+            #print "[%s] Exception in MQTT publish: %s" % ('MQTT', e)
             pass
             
         
@@ -167,10 +174,13 @@ class Mqtt(object):
         """
             Connect and start MQTT FSM
         """
-        print "connecting MQTT..."	
+        #print "connecting MQTT..."
+        self.logger.info("Connecting to MQTT server: %s:%s" % (self.brokerip,self.brokerport))
         try:
             self.client.connect(self.brokerip, port=self.brokerport)
         except:
-            print "[MQTT]:Error connecting to server"
+            #print "[MQTT]:Error connecting to server"
+            self.logger.error("Exception in MQTT connect", exc_info=True)
             sys.exit(1)
+        self.logger.info("MQTT started")
         self.client.loop_start() 

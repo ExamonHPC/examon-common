@@ -24,6 +24,8 @@ class Config:
         self.parser.add_argument('--kairosdb-port', dest='K_PORT', help='kairosdb port')
         self.parser.add_argument('--kairosdb-user', dest='K_USER', help='kairosdb username')
         self.parser.add_argument('--kairosdb-password', dest='K_PASSWORD', help='kairosdb password')
+        self.parser.add_argument('--logfile-size', dest='LOGFILE_SIZE_B', default=5*1024*1024, help='log file size (max) in bytes')
+        self.parser.add_argument('--loglevel', dest='LOG_LEVEL', choices=['DEBUG','INFO','WARNING','ERROR','CRITICAL'], default='INFO', help='log level')
     
     def get_defaults(self):
         config = ConfigParser.RawConfigParser()

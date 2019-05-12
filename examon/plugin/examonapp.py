@@ -2,7 +2,10 @@
 import os
 import sys
 import signal
+import logging
 import collections
+from logging.handlers import RotatingFileHandler
+
 from examon.utils.executor import Executor
 from examon.utils.config import Config
 from examon.utils.daemon import Daemon
@@ -19,6 +22,7 @@ class ExamonApp(Executor):
         self.pidfile = None
         self.daemon = None
         self.runmode = 'run'
+        self.logger = logging.getLogger('examon')
         super(ExamonApp, self).__init__(executor)
         
     def parse_opt(self):
@@ -29,10 +33,27 @@ class ExamonApp(Executor):
         
     def examon_tags(self):
         return collections.OrderedDict()
+        
+    def set_logging(self):
+        LOGFILE_SIZE_B = int(self.conf['LOGFILE_SIZE_B'])
+        LOG_LEVEL = getattr(logging, self.conf['LOG_LEVEL'].upper(), None) 
+        #logger = logging.getLogger('examon')
+        handler = RotatingFileHandler(self.conf['LOG_FILENAME'], mode='a', maxBytes=LOGFILE_SIZE_B, backupCount=2)
+        log_formatter = logging.Formatter(fmt='%(asctime)s - %(name)s - %(levelname)s - [%(filename)s] - [%(processName)s] %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')                             
+        handler.setFormatter(log_formatter)                            
+        self.logger.addHandler(handler)
+        self.logger.setLevel(LOG_LEVEL)
+        # if run print logs also to stdout
+        if self.runmode == 'run':
+            handler = logging.StreamHandler(sys.stdout)
+            handler.setFormatter(log_formatter)
+            self.logger.addHandler(handler)
 
     def run(self):
+        self.set_logging()
         if ('stop' == self.runmode):                        
-            print "Terminating daemon..."
+            print " Terminating daemon..."
+            self.logger.info("Terminating daemon...")
             self.daemon.stop()
             sys.exit(0)
         elif self.runmode in ['run','start','restart']:
