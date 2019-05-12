@@ -43,10 +43,24 @@ class KairosDB:
             self.logger.debug("Inserting %d metrics" % len(metrics))
             response = self.s.post(self.apis['post_metrics'], payload, headers=headers)
             response.raise_for_status()
+            
+            # # DEBUG: send one metric at time
+            # for m in metrics:
+                # pay = [m]
+                # try:
+                    # response = self.s.post(self.apis['post_metrics'], json.dumps([m]), headers=headers)
+                    # response.raise_for_status()
+                # except:
+                    # self.logger.error("Exception in post()", exc_info=True)
+                    # self.logger.error("Request payload: %s" % (json.dumps(pay, indent=4)))
+                    
         except:
             e = sys.exc_info()[0]
             #logger.error("[%s] Exception in post(): %s", "KairosDB", e)
             self.logger.error("Exception in post()", exc_info=True)
+            if response:
+                self.logger.error("Reason %s" % (response.text))
+            #self.logger.error("Request payload: %s" % (json.dumps(pay, indent=4)))
             #print "[%s] Exception in post(): %s" % ("KairosDB", e,)
             #print "[%s] Reason: " % ("KairosDB",)
             #print response.text
