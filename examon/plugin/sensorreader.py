@@ -2,6 +2,7 @@
 import copy
 import time
 import json
+import logging
 import collections
 
 from examon.db.kairosdb import KairosDB
@@ -18,6 +19,7 @@ class SensorReader:
         self.read_data = None
         self.dest_client = None
         self.comp = self.conf['COMPRESS']
+        self.logger = logging.getLogger(__name__)
         
         if self.conf['OUT_PROTOCOL'] == 'kairosdb':
             self.dest_client = KairosDB(self.conf['K_SERVERS'], self.conf['K_PORT'], self.conf['K_USER'], self.conf['K_PASSWORD'])
@@ -38,19 +40,24 @@ class SensorReader:
 
         TS = float(self.conf['TS'])
         while True:
-            #t0 = time.time()
+            t0 = time.time()
             #if self.read_data:
-            worker_id, payload  = self.read_data(self)
-            #t1 = time.time()
+            worker_id, payload = self.read_data(self)
+            t1 = time.time()
             #print "Retrieved and processed %d nodes in %f seconds" % (len(res),(t1-t0),)
+            self.logger.info("Worker [%s] - Retrieved and processed %d metrics in %f seconds" % (worker_id, len(payload),(t1-t0),))
             #print json.dumps(res)
             #sys.exit(0)
             t0 = time.time()
             self.dest_client.put_metrics(payload, comp=self.comp)
-            #print json.dumps(payload[0:3], indent=4)
             t1 = time.time()
-            print "Worker %s:...............insert: %d sensors, time: %f sec, insert_rate %f sens/sec" % (worker_id, \
+            #print json.dumps(payload[0:3], indent=4)
+            # print "Worker %s:...............insert: %d sensors, time: %f sec, insert_rate %f sens/sec" % (worker_id, \
+                                                                                                           # len(payload),\
+                                                                                                           # (t1-t0),\
+                                                                                                           # len(payload)/(t1-t0), )
+            self.logger.debug("Worker [%s] - Insert: %d sensors, time: %f sec, insert_rate: %f sens/sec" % (worker_id, \
                                                                                                            len(payload),\
                                                                                                            (t1-t0),\
-                                                                                                           len(payload)/(t1-t0), )
+                                                                                                           len(payload)/(t1-t0), ))                                                                                              
             time.sleep(TS - (time.time() % TS))
