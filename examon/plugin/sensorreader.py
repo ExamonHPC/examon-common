@@ -45,7 +45,7 @@ class SensorReader:
             worker_id, payload = self.read_data(self)
             t1 = time.time()
             #print "Retrieved and processed %d nodes in %f seconds" % (len(res),(t1-t0),)
-            self.logger.debug("Worker [%s] - Retrieved and processed %d metrics in %f seconds" % (worker_id, len(payload),(t1-t0),))
+            self.logger.info("Worker [%s] - Retrieved and processed %d metrics in %f seconds" % (worker_id, len(payload),(t1-t0),))
             #print json.dumps(res)
             #sys.exit(0)
             t0 = time.time()
