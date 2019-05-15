@@ -10,6 +10,7 @@ from examon.utils.executor import Executor
 from examon.utils.config import Config
 from examon.utils.daemon import Daemon
 
+import multiprocessing_logging as mp_logging
 
 class ExamonApp(Executor):
     def __init__(self, executor='Daemon', configfilename=None):
@@ -48,6 +49,7 @@ class ExamonApp(Executor):
             handler = logging.StreamHandler(sys.stdout)
             handler.setFormatter(log_formatter)
             self.logger.addHandler(handler)
+        mp_logging.install_mp_handler()
 
     def run(self):
         self.set_logging()
