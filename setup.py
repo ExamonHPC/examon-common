@@ -20,6 +20,7 @@ setup(name='examon-common',
           'requests >= 2.21.0',
           'paho-mqtt >= 1.4.0',
           'futures >= 3.2.0',
-          'setuptools >= 40.6.3'
+          'setuptools >= 40.6.3',
+          'concurrent-log-handler >= 0.9.16'
       ],
       zip_safe=False)
