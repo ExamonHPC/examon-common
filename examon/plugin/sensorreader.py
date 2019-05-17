@@ -40,24 +40,29 @@ class SensorReader:
 
         TS = float(self.conf['TS'])
         while True:
-            t0 = time.time()
-            #if self.read_data:
-            worker_id, payload = self.read_data(self)
-            t1 = time.time()
-            #print "Retrieved and processed %d nodes in %f seconds" % (len(res),(t1-t0),)
-            self.logger.info("Worker [%s] - Retrieved and processed %d metrics in %f seconds" % (worker_id, len(payload),(t1-t0),))
-            #print json.dumps(res)
-            #sys.exit(0)
-            t0 = time.time()
-            self.dest_client.put_metrics(payload, comp=self.comp)
-            t1 = time.time()
-            #print json.dumps(payload[0:3], indent=4)
-            # print "Worker %s:...............insert: %d sensors, time: %f sec, insert_rate %f sens/sec" % (worker_id, \
-                                                                                                           # len(payload),\
-                                                                                                           # (t1-t0),\
-                                                                                                           # len(payload)/(t1-t0), )
-            self.logger.debug("Worker [%s] - Insert: %d sensors, time: %f sec, insert_rate: %f sens/sec" % (worker_id, \
-                                                                                                           len(payload),\
+            try:
+                t0 = time.time()
+                #if self.read_data:
+                worker_id, payload = self.read_data(self)
+                t1 = time.time()
+                #print "Retrieved and processed %d nodes in %f seconds" % (len(res),(t1-t0),)
+                self.logger.info("Worker [%s] - Retrieved and processed %d metrics in %f seconds" % (worker_id, len(payload),(t1-t0),))
+                #print json.dumps(res)
+                #sys.exit(0)
+                t0 = time.time()
+                self.dest_client.put_metrics(payload, comp=self.comp)
+                t1 = time.time()
+                #print json.dumps(payload[0:3], indent=4)
+                # print "Worker %s:...............insert: %d sensors, time: %f sec, insert_rate %f sens/sec" % (worker_id, \
+                                                                                                               # len(payload),\
+                                                                                                               # (t1-t0),\
+                                                                                                               # len(payload)/(t1-t0), )
+                self.logger.debug("Worker [%s] - Insert: %d sensors, time: %f sec, insert_rate: %f sens/sec" % (worker_id, \
+                                                                                                               len(payload),\
                                                                                                            (t1-t0),\
-                                                                                                           len(payload)/(t1-t0), ))                                                                                              
+                                                                                                           len(payload)/(t1-t0), ))
+            except Exception:
+                sr.logger.exception('Uncaught exception in main loop!')
+                continue
+                                                                                                           
             time.sleep(TS - (time.time() % TS))
