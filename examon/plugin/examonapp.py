@@ -10,7 +10,8 @@ from examon.utils.executor import Executor
 from examon.utils.config import Config
 from examon.utils.daemon import Daemon
 
-import multiprocessing_logging as mp_logging
+#import multiprocessing_logging as mp_logging
+from concurrent_log_handler import ConcurrentRotatingFileHandler
 
 class ExamonApp(Executor):
     def __init__(self, executor='Daemon', configfilename=None):
@@ -39,7 +40,8 @@ class ExamonApp(Executor):
         LOGFILE_SIZE_B = int(self.conf['LOGFILE_SIZE_B'])
         LOG_LEVEL = getattr(logging, self.conf['LOG_LEVEL'].upper(), None) 
         #logger = logging.getLogger('examon')
-        handler = RotatingFileHandler(self.conf['LOG_FILENAME'], mode='a', maxBytes=LOGFILE_SIZE_B, backupCount=2)
+        #handler = RotatingFileHandler(self.conf['LOG_FILENAME'], mode='a', maxBytes=LOGFILE_SIZE_B, backupCount=2)
+        handler = ConcurrentRotatingFileHandler(self.conf['LOG_FILENAME'], mode='a', maxBytes=LOGFILE_SIZE_B, backupCount=2)
         log_formatter = logging.Formatter(fmt='%(asctime)s - %(name)s - %(levelname)s - [%(filename)s] - [%(processName)s] %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')                             
         handler.setFormatter(log_formatter)                            
         self.logger.addHandler(handler)
@@ -49,7 +51,7 @@ class ExamonApp(Executor):
             handler = logging.StreamHandler(sys.stdout)
             handler.setFormatter(log_formatter)
             self.logger.addHandler(handler)
-        mp_logging.install_mp_handler()
+        #mp_logging.install_mp_handler()
 
     def run(self):
         self.set_logging()
