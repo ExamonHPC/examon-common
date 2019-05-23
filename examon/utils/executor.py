@@ -1,6 +1,7 @@
 
 import sys
 import time
+import copy
 import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed, ProcessPoolExecutor
 from multiprocessing import Process
@@ -17,7 +18,7 @@ class Executor(object):
     
     
     def add_worker(self, *args):
-        self.workers.append(args)
+        self.workers.append(copy.deepcopy(args))
     
     
     def exec_par(self):

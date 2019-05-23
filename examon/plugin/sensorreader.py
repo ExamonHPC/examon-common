@@ -21,12 +21,12 @@ class SensorReader:
         self.comp = self.conf['COMPRESS']
         self.logger = logging.getLogger(__name__)
         
-        if self.conf['OUT_PROTOCOL'] == 'kairosdb':
-            self.dest_client = KairosDB(self.conf['K_SERVERS'], self.conf['K_PORT'], self.conf['K_USER'], self.conf['K_PASSWORD'])
-        elif self.conf['OUT_PROTOCOL'] == 'mqtt':
-            # TODO: add MQTT format in conf
-            self.dest_client = Mqtt(self.conf['MQTT_BROKER'], self.conf['MQTT_PORT'], format=self.conf['MQTT_FORMAT'], outtopic=self.conf['MQTT_TOPIC'])
-            self.dest_client.run()
+        # if self.conf['OUT_PROTOCOL'] == 'kairosdb':
+            # self.dest_client = KairosDB(self.conf['K_SERVERS'], self.conf['K_PORT'], self.conf['K_USER'], self.conf['K_PASSWORD'])
+        # elif self.conf['OUT_PROTOCOL'] == 'mqtt':
+            # # TODO: add MQTT format in conf
+            # self.dest_client = Mqtt(self.conf['MQTT_BROKER'], self.conf['MQTT_PORT'], format=self.conf['MQTT_FORMAT'], outtopic=self.conf['MQTT_TOPIC'])
+            # self.dest_client.run()
        
     def add_tags(self, tags):
         self.tags = copy.deepcopy(tags)
@@ -37,6 +37,13 @@ class SensorReader:
     def run(self):
         if not self.read_data:
             raise Exception("'read_data' must be implemented!")
+            
+        if self.conf['OUT_PROTOCOL'] == 'kairosdb':
+            self.dest_client = KairosDB(self.conf['K_SERVERS'], self.conf['K_PORT'], self.conf['K_USER'], self.conf['K_PASSWORD'])
+        elif self.conf['OUT_PROTOCOL'] == 'mqtt':
+            # TODO: add MQTT format in conf
+            self.dest_client = Mqtt(self.conf['MQTT_BROKER'], self.conf['MQTT_PORT'], format=self.conf['MQTT_FORMAT'], outtopic=self.conf['MQTT_TOPIC'])
+            self.dest_client.run()
 
         TS = float(self.conf['TS'])
         while True:
