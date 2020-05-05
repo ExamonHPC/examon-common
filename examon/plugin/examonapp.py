@@ -1,4 +1,3 @@
-
 import os
 import sys
 import signal
@@ -42,7 +41,8 @@ class ExamonApp(Executor):
         #logger = logging.getLogger('examon')
         #handler = RotatingFileHandler(self.conf['LOG_FILENAME'], mode='a', maxBytes=LOGFILE_SIZE_B, backupCount=2)
         handler = ConcurrentRotatingFileHandler(self.conf['LOG_FILENAME'], mode='a', maxBytes=LOGFILE_SIZE_B, backupCount=2)
-        log_formatter = logging.Formatter(fmt='%(asctime)s - %(name)s - %(levelname)s - [%(filename)s] - [%(processName)s] %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')                             
+        #log_formatter = logging.Formatter(fmt='%(asctime)s - %(name)s - %(levelname)s - [%(filename)s] - [%(processName)s] %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')                             
+        log_formatter = logging.Formatter(fmt='%(levelname)s - %(asctime)s - [%(processName)s] - [%(filename)s] - %(name)s - %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
         handler.setFormatter(log_formatter)                            
         self.logger.addHandler(handler)
         self.logger.setLevel(LOG_LEVEL)
