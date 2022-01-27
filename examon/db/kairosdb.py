@@ -53,6 +53,7 @@ class KairosDB:
                 # except:
                     # self.logger.error("Exception in post()", exc_info=True)
                     # self.logger.error("Request payload: %s" % (json.dumps(pay, indent=4)))
+                    # self.logger.error("Reason %s" % (response.text))
                     
         except:
             e = sys.exc_info()[0]

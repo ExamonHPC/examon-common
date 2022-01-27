@@ -69,7 +69,7 @@ class SensorReader:
                                                                                                            (t1-t0),\
                                                                                                            len(payload)/(t1-t0), ))
             except Exception:
-                sr.logger.exception('Uncaught exception in main loop!')
+                self.logger.exception('Uncaught exception in main loop!')
                 continue
                                                                                                            
             time.sleep(TS - (time.time() % TS))
