@@ -1,11 +1,19 @@
+import sys
 import copy
 import time
 import json
 import logging
 import collections
 
+from threading import Timer
 from examon.db.kairosdb import KairosDB
 from examon.transport.mqtt import Mqtt
+
+
+def timeout_handler():
+    logger = logging.getLogger(__name__)
+    logger.error('Timeout in main loop, exiting..')
+    sys.exit(1)
 
 class SensorReader:
     """
@@ -43,10 +51,15 @@ class SensorReader:
             # TODO: add MQTT format in conf
             self.dest_client = Mqtt(self.conf['MQTT_BROKER'], self.conf['MQTT_PORT'], format=self.conf['MQTT_FORMAT'], outtopic=self.conf['MQTT_TOPIC'])
             self.dest_client.run()
-
+        
         TS = float(self.conf['TS'])
+        
         while True:
             try:
+                self.logger.debug("Start timeout timer")
+                timeout_timer = Timer(3*TS, timeout_handler)  #timeout after 3*sampling time
+                timeout_timer.start()
+                
                 t0 = time.time()
                 #if self.read_data:
                 worker_id, payload = self.read_data(self)
@@ -69,6 +82,12 @@ class SensorReader:
                                                                                                            len(payload)/(t1-t0), ))
             except Exception:
                 self.logger.exception('Uncaught exception in main loop!')
+                self.logger.debug("Cancel timeout timer")
+                timeout_timer.cancel()
                 continue
-                                                                                                           
+            
+            self.logger.debug("Cancel timeout timer")
+            timeout_timer.cancel()
+            
+            self.logger.debug("Start new loop")
             time.sleep(TS - (time.time() % TS))
