@@ -1,9 +1,11 @@
+import os
 import sys
 import copy
 import time
 import json
 import logging
 import collections
+import thread 
 
 from threading import Timer
 from examon.db.kairosdb import KairosDB
@@ -13,7 +15,10 @@ from examon.transport.mqtt import Mqtt
 def timeout_handler():
     logger = logging.getLogger(__name__)
     logger.error('Timeout in main loop, exiting..')
-    sys.exit(1)
+    logger.debug('Process PID: %d' % os.getpid())
+    #sys.exit(1)
+    #thread.interrupt_main()
+    os._exit(1)
 
 class SensorReader:
     """
@@ -57,7 +62,7 @@ class SensorReader:
         while True:
             try:
                 self.logger.debug("Start timeout timer")
-                timeout_timer = Timer(3*TS, timeout_handler)  #timeout after 3*sampling time
+                timeout_timer = Timer(10*TS, timeout_handler)  #timeout after 3*sampling time
                 timeout_timer.start()
                 
                 t0 = time.time()
