@@ -4,7 +4,7 @@ import zlib
 import gzip 
 import json
 import requests
-import StringIO
+import io
 import logging
 
            
@@ -27,7 +27,7 @@ class KairosDB:
         self.apis['post_query'] = self.api_server + "/api/v1/datapoints/query"
     
     def _compress(self, payload):
-        s = StringIO.StringIO()
+        s = io.StringIO()
         with gzip.GzipFile(fileobj=s, mode='w') as g:
             g.write(payload)
         return s.getvalue()

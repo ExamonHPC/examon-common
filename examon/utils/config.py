@@ -1,6 +1,6 @@
 
 import argparse
-import ConfigParser
+import configparser
 
 
 class Config:
@@ -26,9 +26,11 @@ class Config:
         self.parser.add_argument('--kairosdb-password', dest='K_PASSWORD', help='kairosdb password')
         self.parser.add_argument('--logfile-size', dest='LOGFILE_SIZE_B', default=5*1024*1024, help='log file size (max) in bytes')
         self.parser.add_argument('--loglevel', dest='LOG_LEVEL', choices=['DEBUG','INFO','WARNING','ERROR','CRITICAL'], default='INFO', help='log level')
+        self.parser.add_argument('--mqtt-user', dest='MQTT_USER', help='MQTT username', default=None)
+        self.parser.add_argument('--mqtt-password', dest='MQTT_PASSWORD', help='MQTT password', default=None)
     
     def get_defaults(self):
-        config = ConfigParser.RawConfigParser()
+        config = configparser.RawConfigParser()
         config.optionxform = str  #preserve caps
         config.read(self.configfile) 
         for section in config.sections():
@@ -41,5 +43,5 @@ class Config:
     def get_conf(self):
         args = vars(self.parser.parse_args())
         conf = self.get_defaults()
-        conf.update({k: v for k, v in args.items() if v is not None})
+        conf.update({k: v for k, v in list(args.items()) if v is not None})
         return conf

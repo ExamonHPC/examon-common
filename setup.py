@@ -6,10 +6,7 @@ from setuptools import setup
     # exec(fp.read(), version)
 
 setup(name='examon-common',
-      use_scm_version={
-               'local_scheme': 'dirty-tag',
-               'write_to': 'examon/version.py'},
-      setup_requires=['setuptools_scm'],
+      version='v0.1.0-devel-144ee9c2',
       description='Examon common utilities',
       url='http://github.com/fbeneventi/examon-common',
       author='Francesco Beneventi',
@@ -18,8 +15,7 @@ setup(name='examon-common',
       packages=['examon', 'examon.plugin', 'examon.utils', 'examon.db', 'examon.transport'],      
       install_requires=[
           'requests >= 2.21.0',
-          'paho-mqtt >= 1.4.0',
-          'futures >= 3.2.0',
+          'paho-mqtt == 1.4.0',
           'setuptools >= 40.6.3',
           'concurrent-log-handler >= 0.9.16'
       ],

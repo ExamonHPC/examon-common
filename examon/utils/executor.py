@@ -67,7 +67,7 @@ class Executor(object):
 
                 for d in daemons:
                     d['d'].join()
-                print "Workers job finished!"
+                print("Workers job finished!")
                 sys.exit(0) 
             except KeyboardInterrupt:
-                print "Interrupted.."
+                print("Interrupted..")
