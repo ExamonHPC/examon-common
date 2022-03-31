@@ -52,9 +52,9 @@ class Daemon:
         # redirect standard file descriptors
         sys.stdout.flush()
         sys.stderr.flush()
-        si = file(self.stdin, 'r')
-        so = file(self.stdout, 'a+')
-        se = file(self.stderr, 'a+', 0)
+        si = os.open(self.stdin, 'r')
+        so = os.open(self.stdout, 'a+')
+        se = os.open(self.stderr, 'a+', 0)
         os.dup2(si.fileno(), sys.stdin.fileno())
         os.dup2(so.fileno(), sys.stdout.fileno())
         os.dup2(se.fileno(), sys.stderr.fileno())
@@ -84,7 +84,7 @@ class Daemon:
         """
         # Check for a pidfile to see if the daemon already runs
         try:
-            pf = file(self.pidfile,'r')
+            pf = os.open(self.pidfile,'r')
             pid = int(pf.read().strip())
             pf.close()
         except IOError:
@@ -111,7 +111,7 @@ class Daemon:
         """
         # Get the pid from the pidfile
         try:
-            pf = file(self.pidfile,'r')
+            pf = os.open(self.pidfile,'r')
             pid = int(pf.read().strip())
             pf.close()
         except IOError:
