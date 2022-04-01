@@ -6,7 +6,7 @@ from setuptools import setup
     # exec(fp.read(), version)
 
 setup(name='examon-common',
-      version='v0.1.0-devel-144ee9c2',
+      version='v0.1.0-devel-9176a61c',
       description='Examon common utilities',
       url='http://github.com/fbeneventi/examon-common',
       author='Francesco Beneventi',
