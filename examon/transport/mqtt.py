@@ -28,6 +28,7 @@ class Mqtt(object):
         self.outtopic = outtopic
         self.qos = qos
         self.retain = retain
+        self.dryrun = dryrun
         self.client = mosquitto.Mosquitto()
         if username:
             self.client.username_pw_set(username, password)
@@ -163,7 +164,7 @@ class Mqtt(object):
         self._publish(topic, payload)
 
     def _publish(self, topic, payload):
-        if not dryrun:
+        if not self.dryrun:
             try:
                 self.client.publish(topic, payload=payload, qos=self.qos, retain=self.retain)
             except:
