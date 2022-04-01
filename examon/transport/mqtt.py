@@ -21,7 +21,7 @@ class Mqtt(object):
     """
         MQTT client
     """
-    def __init__(self, brokerip, brokerport, username=None, password=None, format='csv', intopic=None, outtopic=None, qos=0, retain=False):
+    def __init__(self, brokerip, brokerport, username=None, password=None, format='csv', intopic=None, outtopic=None, qos=0, retain=False, dryrun=False):
         self.brokerip = brokerip
         self.brokerport = brokerport
         self.intopic = intopic
@@ -115,11 +115,8 @@ class Mqtt(object):
             topic = (topic)
             # publish
             self.logger.debug('[MqttPub] Topic: %s - Payload: %s' % (topic,str(payload)))
-            try:
-                self.client.publish(topic, payload=payload, qos=self.qos, retain=self.retain)
-            except:
-                self.logger.exception('Exception in MQTT publish. Exit.')
-                sys.exit(1)
+            self._publish(topic, payload)
+
     
     def _put_metrics_json(self, metrics, comp=False):
         """
@@ -141,11 +138,8 @@ class Mqtt(object):
                 payload = json.dumps(metric)
             # publish
             self.logger.debug('[MqttPub] Topic: %s - Payload: %s' % (topic,json.dumps(metric)))
-            try:
-                self.client.publish(topic, payload=payload, qos=self.qos, retain=self.retain)
-            except:
-                self.logger.exception('Exception in MQTT publish. Exit.')
-                sys.exit(1)
+            self._publish(topic, payload)
+
     
     def _put_metrics_json_bulk(self, metrics, comp=True):
         """
@@ -166,12 +160,15 @@ class Mqtt(object):
             payload = json.dumps(metrics)
         # publish
         self.logger.debug('[MqttPub] Topic: %s - Payload: %s' % (topic,json.dumps(metrics)))
-        try:
-            self.client.publish(topic, payload=payload, qos=self.qos, retain=self.retain)
-        except:
-            self.logger.exception('Exception in MQTT publish. Exit.')
-            sys.exit(1)
-            
+        self._publish(topic, payload)
+
+    def _publish(self, topic, payload):
+        if not dryrun:
+            try:
+                self.client.publish(topic, payload=payload, qos=self.qos, retain=self.retain)
+            except:
+                self.logger.exception('Exception in MQTT publish. Exit.')
+                sys.exit(1)
         
     def run(self):
         """
