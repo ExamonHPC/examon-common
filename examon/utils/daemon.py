@@ -55,7 +55,7 @@ class Daemon:
         sys.stderr.flush()
         si = io.open(self.stdin, 'r')
         so = io.open(self.stdout, 'a+')
-        se = io.open(self.stderr, 'a+', 0)
+        se = io.open(self.stderr, 'a+b', 0)
         os.dup2(si.fileno(), sys.stdin.fileno())
         os.dup2(so.fileno(), sys.stdout.fileno())
         os.dup2(se.fileno(), sys.stderr.fileno())
