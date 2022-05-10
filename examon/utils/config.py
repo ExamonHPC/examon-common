@@ -26,6 +26,9 @@ class Config:
         self.parser.add_argument('--kairosdb-password', dest='K_PASSWORD', help='kairosdb password')
         self.parser.add_argument('--logfile-size', dest='LOGFILE_SIZE_B', default=5*1024*1024, help='log file size (max) in bytes')
         self.parser.add_argument('--loglevel', dest='LOG_LEVEL', choices=['DEBUG','INFO','WARNING','ERROR','CRITICAL'], default='INFO', help='log level')
+        self.parser.add_argument('--dry-run', dest='DRY_RUN', action='store_true', default=False, help='Data is not sent to the broker if True (default: False)')
+        self.parser.add_argument('--mqtt-user', dest='MQTT_USER', help='MQTT username', default=None)
+        self.parser.add_argument('--mqtt-password', dest='MQTT_PASSWORD', help='MQTT password', default=None)
     
     def get_defaults(self):
         config = ConfigParser.RawConfigParser()

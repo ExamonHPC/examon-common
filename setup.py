@@ -6,10 +6,7 @@ from setuptools import setup
     # exec(fp.read(), version)
 
 setup(name='examon-common',
-      use_scm_version={
-               'local_scheme': 'dirty-tag',
-               'write_to': 'examon/version.py'},
-      setup_requires=['setuptools_scm'],
+      version='v0.1.0-devel-py2',
       description='Examon common utilities',
       url='http://github.com/fbeneventi/examon-common',
       author='Francesco Beneventi',
