@@ -18,7 +18,8 @@ class KairosDB:
         self.user = user
         self.password = password
         self.s = requests.Session()
-        self.s.auth = (self.user, self.password)
+        if self.password:
+            self.s.auth = (self.user, self.password)
         #self.s.headers.update({'x-test': 'true'})
         self.logger = logging.getLogger(__name__)
         self.apis = {}
@@ -57,14 +58,9 @@ class KairosDB:
                     
         except:
             e = sys.exc_info()[0]
-            #logger.error("[%s] Exception in post(): %s", "KairosDB", e)
             self.logger.error("Exception in post()", exc_info=True)
             if response:
                 self.logger.error("Reason %s" % (response.text))
-            #self.logger.error("Request payload: %s" % (json.dumps(pay, indent=4)))
-            #print "[%s] Exception in post(): %s" % ("KairosDB", e,)
-            #print "[%s] Reason: " % ("KairosDB",)
-            #print response.text
             pass 
     
     def query_metrics(self, query):

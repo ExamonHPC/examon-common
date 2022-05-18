@@ -28,7 +28,7 @@ class Config:
         self.parser.add_argument('--loglevel', dest='LOG_LEVEL', choices=['DEBUG','INFO','WARNING','ERROR','CRITICAL'], default='INFO', help='log level')
     
     def get_defaults(self):
-        config = ConfigParser.RawConfigParser()
+        config = ConfigParser.RawConfigParser(allow_no_value=True)
         config.optionxform = str  #preserve caps
         config.read(self.configfile) 
         for section in config.sections():
