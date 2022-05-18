@@ -31,7 +31,7 @@ class Config:
         self.parser.add_argument('--mqtt-password', dest='MQTT_PASSWORD', help='MQTT password', default=None)
     
     def get_defaults(self):
-        config = ConfigParser.RawConfigParser()
+        config = ConfigParser.RawConfigParser(allow_no_value=True)
         config.optionxform = str  #preserve caps
         config.read(self.configfile) 
         for section in config.sections():

@@ -18,7 +18,8 @@ class KairosDB:
         self.user = user
         self.password = password
         self.s = requests.Session()
-        self.s.auth = (self.user, self.password)
+        if self.password:
+            self.s.auth = (self.user, self.password)
         #self.s.headers.update({'x-test': 'true'})
         self.logger = logging.getLogger(__name__)
         self.apis = {}
