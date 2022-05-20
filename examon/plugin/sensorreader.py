@@ -39,7 +39,26 @@ class SensorReader:
             # # TODO: add MQTT format in conf
             # self.dest_client = Mqtt(self.conf['MQTT_BROKER'], self.conf['MQTT_PORT'], format=self.conf['MQTT_FORMAT'], outtopic=self.conf['MQTT_TOPIC'])
             # self.dest_client.run()
-       
+
+    def add_tag_v(self, v):
+        """Sanitize tag values"""
+        if (v is not None) and (v is not u'') and (v is not 'None'):
+            ret = v.replace(' ','_').replace('/','_').replace('+','_').replace('#','_')
+        else:
+            ret = '_'
+        return ret
+
+    def add_payload_v(self, v):
+        """Sanitize payload values"""
+        if (v is not None) and (v is not u'') and (v is not 'None'):
+            if isinstance(v, basestring):
+                ret = v.replace(';','_')
+            else:
+                ret = v
+        else:
+            ret = '_'
+        return ret
+      
     def add_tags(self, tags):
         self.tags = copy.deepcopy(tags)
         
