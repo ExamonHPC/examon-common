@@ -109,10 +109,10 @@ class Mqtt(object):
             if comp:
                 payload = self._compress(payload)  # TODO: find a better way. This manage both strings and floats
             # build topic 
-            topic = '/'.join([(val).encode('utf-8') for pair in metric['tags'].items() for val in pair])
+            topic = '/'.join([(val).replace('/','_').encode('utf-8') for pair in metric['tags'].items() for val in pair])
             topic += '/' + (metric['name']).encode('utf-8')
             # sanitize
-            topic = topic.replace(' ','_').replace('+','_').replace('#','_').replace('.','_')
+            topic = topic.replace(' ','_').replace('+','_').replace('#','_')
             topic = (topic).decode('utf-8')
             # publish
             self.logger.debug('[MqttPub] Topic: %s - Payload: %s' % (topic,str(payload)))
