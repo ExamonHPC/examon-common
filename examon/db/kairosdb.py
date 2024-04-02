@@ -35,6 +35,7 @@ class KairosDB:
     
     def put_metrics(self, metrics, comp=True):
         headers = {}
+        response = None
         if comp:
             headers = {'content-type': 'application/gzip'}
             payload = self._compress(json.dumps(metrics))
@@ -57,16 +58,17 @@ class KairosDB:
                     # self.logger.error("Reason %s" % (response.text))
                     
         except:
-            e = sys.exc_info()[0]
+            #e = sys.exc_info()[0]
             #logger.error("[%s] Exception in post(): %s", "KairosDB", e)
-            self.logger.error("Exception in post()", exc_info=True)
-            if response:
-                self.logger.error("Reason %s" % (response.text))
+            #self.logger.error("Exception in post()", exc_info=True)
+            self.logger.exception("Exception in post()")
+            #if response:
+            #    self.logger.error("Reason %s" % (response.text))
             #self.logger.error("Request payload: %s" % (json.dumps(pay, indent=4)))
             #print "[%s] Exception in post(): %s" % ("KairosDB", e,)
             #print "[%s] Reason: " % ("KairosDB",)
             #print response.text
-            pass 
+            #sys.exit(1)
     
     def query_metrics(self, query):
         self.logger.debug("query metrics: %s" % repr(query))
