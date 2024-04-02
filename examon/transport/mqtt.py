@@ -175,6 +175,7 @@ class Mqtt(object):
         """
             Connect and start MQTT FSM
         """
+        rc = None
         self.logger.info('Connecting to MQTT server: %s:%s' % (self.brokerip,self.brokerport))
         try:
             rc = self.client.connect(self.brokerip, port=int(self.brokerport))
