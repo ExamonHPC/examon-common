@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup
 
-# version = {}
-# with open('./examon/version.py') as fp:
-    # exec(fp.read(), version)
-
 setup(name='examon-common',
-      version='v0.1.0-devel-c13ca2d2',
+      version='v0.2.3',
       description='Examon common utilities',
       url='http://github.com/fbeneventi/examon-common',
       author='Francesco Beneventi',

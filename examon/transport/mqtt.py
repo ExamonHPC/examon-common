@@ -109,10 +109,10 @@ class Mqtt(object):
             if comp:
                 payload = self._compress(payload)  # TODO: find a better way. This manage both strings and floats
             # build topic 
-            topic = '/'.join([(val) for pair in list(metric['tags'].items()) for val in pair])
+            topic = '/'.join([(val).replace('/','_') for pair in list(metric['tags'].items()) for val in pair])
             topic += '/' + (metric['name'])
             # sanitize
-            topic = topic.replace(' ','_').replace('+','_').replace('#','_').replace('.','_')
+            topic = topic.replace(' ','_').replace('+','_').replace('#','_')
             topic = (topic)
             # publish
             self.logger.debug('[MqttPub] Topic: %s - Payload: %s' % (topic,str(payload)))
@@ -175,6 +175,7 @@ class Mqtt(object):
         """
             Connect and start MQTT FSM
         """
+        rc = -1
         self.logger.info('Connecting to MQTT server: %s:%s' % (self.brokerip,self.brokerport))
         try:
             rc = self.client.connect(self.brokerip, port=int(self.brokerport))
