@@ -1,6 +1,7 @@
 import pytest
 from examon.db.kairosdb import KairosDB
 import gzip
+import json
 
 def test_kairosdb_initialization():
     client = KairosDB('localhost', '8080', 'user', 'pass')
@@ -22,7 +23,12 @@ def test_put_metrics(mock_requests_session):
     
     client.put_metrics(metrics)
     
-    mock_requests_session.return_value.post.assert_called_once()
+    # Verify the POST request was made once with the correct arguments
+    mock_requests_session.return_value.post.assert_called_once_with(
+        'http://localhost:8080/api/v1/datapoints',
+        gzip.compress(json.dumps(metrics).encode('utf-8')),
+        headers={'Content-Type': 'application/gzip'}
+    )
 
 def test_put_metrics_no_compression(mock_requests_session):
     client = KairosDB('localhost', '8080')
@@ -37,7 +43,12 @@ def test_put_metrics_no_compression(mock_requests_session):
     
     client.put_metrics(metrics, comp=False)
     
-    mock_requests_session.return_value.post.assert_called_once()
+    # Verify the POST request was made once with the correct arguments
+    mock_requests_session.return_value.post.assert_called_once_with(
+        'http://localhost:8080/api/v1/datapoints',
+        json.dumps(metrics),
+        headers={}
+    )
 
 def test_query_metrics(mock_requests_session):
     client = KairosDB('localhost', '8080')
@@ -51,7 +62,16 @@ def test_query_metrics(mock_requests_session):
     mock_response.json.return_value = {'results': []}
     
     result = client.query_metrics(query)
+    
+    # Verify the response
     assert result == {'results': []}
+    
+    # Verify the query was sent correctly
+    mock_requests_session.return_value.post.assert_called_once_with(
+        'http://localhost:8080/api/v1/datapoints/query',
+        data=json.dumps(query),
+        headers={'Accept-Encoding': 'gzip, deflate'}
+    )
 
 def test_compression(mock_requests_session):
     client = KairosDB('localhost', '8080')

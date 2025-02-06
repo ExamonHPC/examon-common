@@ -81,12 +81,13 @@ class Mqtt(object):
     
     def _compress(self, payload):
         """
-            Compress payload. TODO: replace with blosc
+            Compress payload using gzip
         """
-        s = io.StringIO()
-        with gzip.GzipFile(fileobj=s, mode='w') as g:
-            g.write(payload)
-        return s.getvalue()
+        # Convert string payload to bytes if needed
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+            
+        return gzip.compress(payload)
         
     def _put_metrics_csv(self, metrics, comp=False):
         """

@@ -1,5 +1,6 @@
 import pytest
 from examon.transport.mqtt import Mqtt
+import json
 
 def test_mqtt_initialization(mock_mqtt_client):
     mqtt = Mqtt('localhost', '1883', username='user', password='pass')
@@ -17,7 +18,13 @@ def test_put_metrics_csv(mock_mqtt_client):
     }]
     
     mqtt.put_metrics(metrics)
-    mock_mqtt_client.return_value.publish.assert_called_once()
+
+    mock_mqtt_client.return_value.publish.assert_called_once_with(
+        'host/test-host/test.metric',
+        payload='42;1234567890.000', 
+        qos=0, 
+        retain=False
+    )
 
 def test_put_metrics_json(mock_mqtt_client):
     mqtt = Mqtt('localhost', '1883', format='json', outtopic='test/topic')
@@ -29,4 +36,10 @@ def test_put_metrics_json(mock_mqtt_client):
     }]
     
     mqtt.put_metrics(metrics)
-    mock_mqtt_client.return_value.publish.assert_called_once() 
+
+    mock_mqtt_client.return_value.publish.assert_called_once_with(
+        'test/topic',
+        payload=json.dumps(metrics[0]),
+        qos=0,
+        retain=False
+    ) 

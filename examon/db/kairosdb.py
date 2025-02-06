@@ -37,7 +37,7 @@ class KairosDB:
         headers = {}
         response = None
         if comp:
-            headers = {'content-type': 'application/gzip'}
+            headers = {'Content-Type': 'application/gzip'}
             payload = self._compress(json.dumps(metrics))
         else:
             payload = json.dumps(metrics)
