@@ -1,4 +1,3 @@
-
 import sys
 import zlib
 import gzip 
@@ -28,10 +27,11 @@ class KairosDB:
         self.apis['post_query'] = self.api_server + "/api/v1/datapoints/query"
     
     def _compress(self, payload):
-        s = io.StringIO()
-        with gzip.GzipFile(fileobj=s, mode='w') as g:
-            g.write(payload)
-        return s.getvalue()
+        """Compress payload using gzip for HTTP transport"""
+        # Convert string payload to bytes before compression
+        payload_bytes = payload.encode('utf-8')
+        # Compress the bytes
+        return gzip.compress(payload_bytes)
     
     def put_metrics(self, metrics, comp=True):
         headers = {}
