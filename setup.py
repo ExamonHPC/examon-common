@@ -13,6 +13,8 @@ setup(name='examon-common',
           'requests >= 2.21.0',
           'paho-mqtt == 1.4.0',
           'setuptools >= 40.6.3',
-          'concurrent-log-handler >= 0.9.16'
+          'concurrent-log-handler >= 0.9.16',
+          'pytest>=6.0.0',
+          'pytest-mock>=3.0.0'
       ],
       zip_safe=False)
