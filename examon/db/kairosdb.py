@@ -12,12 +12,14 @@ class KairosDB:
     """
         KairosDB REST client
     """
-    def __init__(self, server, port, user=None, password=None):
+    def __init__(self, server, port, user=None, password=None, timeout=60, debug=False):
         self.server = server
         self.port = port
         self.user = user
+        self.debug = debug
         self.password = password
         self.s = requests.Session()
+        self.s.timeout = timeout
         if self.password:
             self.s.auth = (self.user, self.password)
         #self.s.headers.update({'x-test': 'true'})
@@ -42,36 +44,35 @@ class KairosDB:
         else:
             payload = json.dumps(metrics)
         try:
-            self.logger.debug("Inserting %d metrics" % len(metrics))
-            response = self.s.post(self.apis['post_metrics'], payload, headers=headers)
-            response.raise_for_status()
+            if not self.debug:
+                self.logger.debug("Inserting %d metrics" % len(metrics))
+                response = self.s.post(self.apis['post_metrics'], payload, headers=headers)
+                response.raise_for_status()
             
-            # # DEBUG: send one metric at time
-            # for m in metrics:
-                # pay = [m]
-                # try:
-                    # response = self.s.post(self.apis['post_metrics'], json.dumps([m]), headers=headers)
-                    # response.raise_for_status()
-                # except:
-                    # self.logger.error("Exception in post()", exc_info=True)
-                    # self.logger.error("Request payload: %s" % (json.dumps(pay, indent=4)))
-                    # self.logger.error("Reason %s" % (response.text))
+            # DEBUG: send one metric at time
+            else:  # TODO: Make this configurable
+                for m in metrics:
+                    pay = [m]
+                    try:
+                        response = self.s.post(self.apis['post_metrics'], json.dumps([m]), headers=headers)
+                        response.raise_for_status()
+                    except:
+                        self.logger.exception("Exception in post()")
+                        self.logger.error("Request payload: %s" % (json.dumps(pay, indent=4)))
+                        sys.exit(1)
                     
         except:
-            #e = sys.exc_info()[0]
-            #logger.error("[%s] Exception in post(): %s", "KairosDB", e)
-            #self.logger.error("Exception in post()", exc_info=True)
             self.logger.exception("Exception in post()")
-            #if response:
-            #    self.logger.error("Reason %s" % (response.text))
-            #self.logger.error("Request payload: %s" % (json.dumps(pay, indent=4)))
-            #print "[%s] Exception in post(): %s" % ("KairosDB", e,)
-            #print "[%s] Reason: " % ("KairosDB",)
-            #print response.text
-            #sys.exit(1)
+            sys.exit(1)
     
     def query_metrics(self, query):
-        self.logger.debug("query metrics: %s" % repr(query))
-        headers = {'Accept-Encoding': 'gzip, deflate'}
-        response = self.s.post(self.apis['post_query'], data=json.dumps(query), headers=headers)
-        return response.json()
+        response = None
+        try:
+            self.logger.debug("query metrics: %s" % repr(query))
+            headers = {'Accept-Encoding': 'gzip, deflate'}
+            response = self.s.post(self.apis['post_query'], data=json.dumps(query), headers=headers)
+            response.raise_for_status()
+            return response.json()
+        except:
+            self.logger.exception("Exception in post()")
+            sys.exit(1)
