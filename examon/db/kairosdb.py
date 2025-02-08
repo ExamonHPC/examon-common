@@ -58,12 +58,9 @@ class KairosDB:
                         response.raise_for_status()
                     except:
                         self.logger.exception("Exception in post()")
-                        self.logger.error("Request payload: %s" % (json.dumps(pay, indent=4)))
-                        sys.exit(1)
-                    
+                        self.logger.error("Request payload: %s" % (json.dumps(pay, indent=4)))                     
         except:
             self.logger.exception("Exception in post()")
-            sys.exit(1)
     
     def query_metrics(self, query):
         response = None
@@ -75,4 +72,3 @@ class KairosDB:
             return response.json()
         except:
             self.logger.exception("Exception in post()")
-            sys.exit(1)
