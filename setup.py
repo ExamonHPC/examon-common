@@ -2,19 +2,20 @@
 from setuptools import setup
 
 setup(name='examon-common',
-      version='v0.2.4',
+      version='v0.2.5',
       description='Examon common utilities',
       url='http://github.com/fbeneventi/examon-common',
       author='Francesco Beneventi',
-      author_email='francesco.beneventi@unibo.it',
+      author_email='beneventi.francesco@gmail.com',
       license='MIT',
       packages=['examon', 'examon.plugin', 'examon.utils', 'examon.db', 'examon.transport'],      
       install_requires=[
-          'requests >= 2.21.0',
-          'paho-mqtt == 1.4.0',
-          'setuptools >= 40.6.3',
-          'concurrent-log-handler >= 0.9.16',
-          'pytest>=6.0.0',
-          'pytest-mock>=3.0.0'
+          'requests == 2.32.3',
+          'paho-mqtt == 1.6.1',
+          'setuptools == 66.1.1',
+          'concurrent-log-handler == 0.9.25',
+          'pytest == 8.3.4',
+          'pytest-mock == 3.14.0'
       ],
       zip_safe=False)
+

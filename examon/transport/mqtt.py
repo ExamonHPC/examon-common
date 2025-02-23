@@ -13,7 +13,7 @@ import json
 import struct
 import io
 import logging
-import paho.mqtt.client as mosquitto
+import paho.mqtt.client as mqtt
 
 
 
@@ -29,7 +29,7 @@ class Mqtt(object):
         self.qos = qos
         self.retain = retain
         self.dryrun = dryrun
-        self.client = mosquitto.Mosquitto()
+        self.client = mqtt.Client()
         if username:
             self.client.username_pw_set(username, password)
         self.client.on_connect = self.on_connect
