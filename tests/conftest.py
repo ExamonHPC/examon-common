@@ -40,7 +40,7 @@ LOGFILE_SIZE_B = 5242880
 @pytest.fixture
 def mock_mqtt_client(mocker):
     """Mocks MQTT client for testing"""
-    mock_client = mocker.patch('paho.mqtt.client.Mosquitto')
+    mock_client = mocker.patch('paho.mqtt.client.Client')
     return mock_client
 
 @pytest.fixture
