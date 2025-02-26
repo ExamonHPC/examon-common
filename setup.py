@@ -2,7 +2,7 @@
 from setuptools import setup
 
 setup(name='examon-common',
-      version='v0.2.5',
+      version='v0.2.6',
       description='Examon common utilities',
       url='http://github.com/fbeneventi/examon-common',
       author='Francesco Beneventi',

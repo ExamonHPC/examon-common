@@ -1,3 +1,3 @@
 Examon common utilities package
 ===============================
-v0.2.5
+v0.2.6

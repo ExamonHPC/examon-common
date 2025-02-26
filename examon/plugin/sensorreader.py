@@ -42,7 +42,7 @@ class SensorReader:
 
     def add_tag_v(self, v):
         """Sanitize tag values"""
-        if (v is not None) and (v is not u'') and (v is not 'None'):
+        if (v is not None) and (v != u'') and (v != 'None'):
             ret = v.replace(' ','_').replace('/','_').replace('+','_').replace('#','_')
         else:
             ret = '_'
@@ -50,7 +50,7 @@ class SensorReader:
 
     def add_payload_v(self, v):
         """Sanitize payload values"""
-        if (v is not None) and (v is not u'') and (v is not 'None'):
+        if (v is not None) and (v != u'') and (v != 'None'):
             if isinstance(v, str):
                 ret = v.replace(';','_')
             else:
