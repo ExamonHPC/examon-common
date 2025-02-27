@@ -21,7 +21,6 @@ class KairosDB:
         self.s.timeout = timeout
         if self.password:
             self.s.auth = (self.user, self.password)
-        #self.s.headers.update({'x-test': 'true'})
         self.logger = logging.getLogger(__name__)
         self.apis = {}
         self.api_server = "http://" + self.server + ":" + self.port

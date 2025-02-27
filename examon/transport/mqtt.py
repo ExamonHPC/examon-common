@@ -56,8 +56,7 @@ class Mqtt(object):
     def on_log(self, client, userdata, level, buff):
         self.logger.debug('MQTT logs: %s' % (buff)) 
     
-    def on_connect(self, client, userdata, flags, rc):    # paho
-    #def on_connect(self, client, userdata, rc):
+    def on_connect(self, client, userdata, flags, rc):
         """
             On connect callback
         """
