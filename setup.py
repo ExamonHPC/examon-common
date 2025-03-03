@@ -15,7 +15,8 @@ setup(name='examon-common',
           'setuptools == 66.1.1',
           'concurrent-log-handler == 0.9.25',
           'pytest == 8.3.4',
-          'pytest-mock == 3.14.0'
+          'pytest-mock == 3.14.0',
+          'psutil == 6.1.1'
       ],
       zip_safe=False)
 
