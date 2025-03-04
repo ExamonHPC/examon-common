@@ -5,21 +5,10 @@ import time
 import json
 import logging
 import collections
-import _thread
 
 from threading import Timer
 from examon.db.kairosdb import KairosDB
 from examon.transport.mqtt import Mqtt
-
-
-# def timeout_handler():
-#     logger = logging.getLogger(__name__)
-#     logger.error('Timeout in main loop, exiting..')
-#     logger.debug('Process PID: %d' % os.getpid())
-#     # sys.exit(1)
-#     # thread.interrupt_main()
-#     #os._exit(1)
-#     raise Exception('Timeout in main loop, exiting..')
 
 
 class SensorReader:
@@ -39,13 +28,9 @@ class SensorReader:
 
 
     def timeout_handler(self):
-        #logger = logging.getLogger(__name__)
         self.logger.error('Timeout in main loop, exiting..')
         self.logger.debug('Process PID: %d' % os.getpid())
-        #sys.exit(1)
-        # thread.interrupt_main()
         os._exit(1)
-        #self.running = False
 
     def add_tag_v(self, v):
         """Sanitize tag values"""
@@ -94,7 +79,7 @@ class SensorReader:
         while True:
             try:
                 self.logger.debug("Start timeout timer")
-                timeout_timer = Timer(self.timeout, self.timeout_handler)  # timeout after 3*sampling time
+                timeout_timer = Timer(self.timeout, self.timeout_handler)  
                 timeout_timer.start()
                 
                 t0 = time.time()
