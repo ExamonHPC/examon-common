@@ -24,7 +24,7 @@ class ExamonApp(Executor):
         self.daemon = None
         self.runmode = 'run'
         self.logger = logging.getLogger('examon')
-        super(ExamonApp, self).__init__(executor)
+        super(ExamonApp, self).__init__(executor, keepalivesec=self.conf.get('KEEPALIVE_SEC', 60))
         
     def parse_opt(self):
         self.conf = self.cfg.get_conf()
