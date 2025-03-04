@@ -120,7 +120,7 @@ class SensorReader:
                 self.logger.exception('Uncaught exception in main loop!')
                 self.logger.debug("Cancel timeout timer")
                 timeout_timer.cancel()
-                continue
+                return 1
             
             self.logger.debug("Cancel timeout timer")
             timeout_timer.cancel()
