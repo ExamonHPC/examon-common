@@ -111,4 +111,5 @@ class SensorReader:
             timeout_timer.cancel()
             
             self.logger.debug("Start new loop")
-            time.sleep(self.TS - (time.time() % self.TS))
+            if self.TS > 0:
+                time.sleep(self.TS - (time.time() % self.TS))
