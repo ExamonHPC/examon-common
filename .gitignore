@@ -1,2 +1,4 @@
 *.pyc
 ./examon/version.py
+build
+*.egg*
